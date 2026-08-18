@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>توازن | المتوسطة الرابعة والثانوية الثانية مسارات بالرس</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;800&family=Tajawal:wght@400;500;700&display=swap" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/12.16.0/firebase-app-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/12.16.0/firebase-auth-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/12.16.0/firebase-firestore-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+  :root{
+    --paper:#FAF7F0; --ink:#1F2A44; --ink-soft:#5B6478; --teal:#0F766E; --teal-deep:#0B5750;
+    --gold:#C89B3C; --amber:#D97706; --red:#DC2626; --line:#E4DDD0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:'Tajawal',sans-serif}
+  h1,h2,.display{font-family:'Cairo',sans-serif}
+  #root{min-height:100vh;display:flex;flex-direction:column}
+  header.top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;background:#fff;border-bottom:1px solid var(--line);padding:16px 24px}
+  .school-name{font-size:13px;color:var(--ink-soft);margin-top:4px}
+  .body-row{flex:1;display:flex}
+  .spine{width:44px;background:linear-gradient(180deg,var(--teal),var(--teal-deep));display:flex;flex-direction:column;align-items:center;padding-top:24px;gap:40px;flex-shrink:0}
+  .spine span{writing-mode:vertical-rl;color:var(--paper);font-family:'Cairo',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;opacity:.85}
+  .main{flex:1;padding:28px 32px 60px;max-width:1100px;margin:0 auto;width:100%}
+  .eyebrow{font-size:13px;color:var(--teal);font-weight:700;margin-bottom:4px}
+  .title{font-family:'Cairo',sans-serif;font-weight:800;font-size:22px;margin:0;color:var(--ink)}
+  .userbox{display:flex;align-items:center;gap:14px}
+  .userinfo{display:flex;flex-direction:column;align-items:flex-end}
+  .username{font-weight:700;font-size:14px}
+  .userrole{font-size:12px;color:var(--ink-soft)}
+  button{cursor:pointer;font-family:'Tajawal',sans-serif}
+  .btn-ghost{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);color:var(--ink-soft);border-radius:8px;padding:8px 12px;font-size:13px;font-weight:500}
+  .btn-primary{display:flex;align-items:center;justify-content:center;gap:6px;background:var(--teal);color:#fff;border:none;border-radius:8px;padding:11px 16px;font-weight:700;font-size:14px;width:100%;margin-top:4px}
+  .btn-primary:disabled{opacity:.6}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px}
+  .card-title{font-size:18px;font-weight:700;margin:0 0 14px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:760px){.grid2{grid-template-columns:1fr}}
+  label.field{display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--ink-soft);font-weight:500;margin-bottom:12px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  input,select{padding:10px 12px;border-radius:8px;border:1px solid var(--line);font-family:'Tajawal',sans-serif;font-size:14px;color:var(--ink);background:var(--paper);width:100%}
+  .list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+  .list-item{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:var(--paper);border-radius:8px;border:1px solid var(--line)}
+  .list-item-title{font-weight:700;font-size:14px}
+  .list-item-meta{font-size:12px;color:var(--ink-soft);margin-top:2px}
+  .icon-btn{background:transparent;border:none;color:var(--red);padding:6px;font-size:16px}
+  .muted{color:var(--ink-soft);font-size:13.5px}
+  .role-switch{display:flex;gap:8px;background:#fff;padding:6px;border-radius:12px;border:1px solid var(--line)}
+  .role-pill{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:8px;border:none;background:transparent;color:var(--ink-soft);font-weight:500;font-size:14px}
+  .role-pill.active{background:var(--teal);color:#fff}
+  .type-row{display:flex;gap:8px}
+  .type-pill{padding:7px 12px;border-radius:20px;border:1px solid var(--line);background:var(--paper);color:var(--ink-soft);font-size:13px;font-weight:500}
+  .type-pill.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .login-wrap{min-height:calc(100vh - 66px);width:100%;display:flex;align-items:center;justify-content:center;padding:20px}
+  .login-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:32px;max-width:400px;width:100%}
+  .mode-switch{display:flex;border-bottom:1px solid var(--line)}
+  .mode-tab{flex:1;padding:10px 0;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--ink-soft);font-weight:700;font-size:14px}
+  .mode-tab.active{color:var(--teal);border-bottom-color:var(--teal)}
+  .error-banner{background:#FEE2E2;color:#991B1B;padding:10px 14px;border-radius:8px;margin-bottom:16px;font-size:13.5px}
+  .setup-banner{background:#FFF7E6;border:1px solid var(--gold);color:#7A5B14;padding:16px 18px;border-radius:10px;margin-bottom:20px;font-size:13.5px;line-height:1.9}
+  .setup-banner code{background:#fff;padding:1px 6px;border-radius:4px;border:1px solid var(--line)}
+  table{width:100%;border-collapse:collapse}
+  th{text-align:center;padding:8px 10px;font-family:'Cairo',sans-serif;font-size:13px;color:var(--ink-soft);border-bottom:1px solid var(--line)}
+  td{text-align:center;padding:10px;border-bottom:1px solid #F0EBE0}
+  .pulse-cell{display:flex;flex-direction:column;align-items:center;gap:4px}
+  .pulse-dot{border-radius:50%;transition:all .3s;margin:0 auto}
+  .pulse-val{font-size:11px;color:var(--ink-soft)}
+  .spin{animation:spin 1s linear infinite;display:inline-block}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .center-screen{min-height:100vh;width:100%;display:flex;align-items:center;justify-content:center}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script>
+/* =====================================================================
+   الخطوة ١ — لصق إعدادات مشروعك في Firebase هنا
+   من Firebase Console: Project settings > عام > تطبيقاتك > SDK setup
+   ===================================================================== */
+const firebaseConfig = {
+  apiKey: "AIzaSyBl2_3Q3s1azbFnx6X5ZRq_X1hYnw0Bz_k",
+  authDomain: "tawazon-school.firebaseapp.com",
+  projectId: "tawazon-school",
+  storageBucket: "tawazon-school.firebasestorage.app",
+  messagingSenderId: "999233535675",
+  appId: "1:999233535675:web:73d87e3c8963c7a6ae739e",
+};
+
+const CONFIG_READY = firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY";
+
+const DEFAULT_CLASSES = [
+  "الأول متوسط / 1", "الأول متوسط / 2", "الثاني متوسط / 1",
+  "الثاني متوسط / 2", "الثالث متوسط / 1", "الثالث ثانوي / 1",
+];
+
+const SUBJECTS = ["اللغة الإنجليزية", "الرياضيات", "العلوم", "اللغة العربية", "الدراسات الإسلامية", "الاجتماعيات"];
+const TYPES = [
+  { key: "homework", label: "واجب", weight: 1 },
+  { key: "quiz", label: "اختبار", weight: 3 },
+  { key: "project", label: "مشروع", weight: 3 },
+];
+const typeLabel = (k) => (TYPES.find((t) => t.key === k) || TYPES[0]).label;
+const typeWeight = (k) => (TYPES.find((t) => t.key === k) || TYPES[0]).weight;
+const WEEKDAYS = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس"];
+const SCHOOL_NAME = "المتوسطة الرابعة والثانوية الثانية مسارات بالرس";
+const MOE_LOGO_B64 = "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";
+const ROLE_LABEL = { teacher: "معلّمة", family: "طالبة / ولي أمر", admin: "الإدارة" };
+
+// Admin registration is gated by a simple shared passphrase since this demo
+// has no server-side invite system yet. Change it before sharing the file.
+const ADMIN_SIGNUP_CODE = "2nd-school";
+
+function startOfWeek(d) { const x = new Date(d); x.setDate(x.getDate() - x.getDay()); x.setHours(0, 0, 0, 0); return x; }
+function addDays(d, n) { const x = new Date(d); x.setDate(x.getDate() + n); return x; }
+function fmtDate(d) { return d.toISOString().slice(0, 10); }
+function fmtLabel(d) { return d.toLocaleDateString("ar-SA", { day: "numeric", month: "short" }); }
+function loadLevel(minutes, heavyCount) {
+  if (heavyCount >= 2 || minutes > 120) return { label: "مرتفع", color: "#DC2626" };
+  if (heavyCount === 1 || minutes > 60) return { label: "متوسط", color: "#C89B3C" };
+  if (minutes > 0) return { label: "خفيف", color: "#0F766E" };
+  return { label: "لا يوجد", color: "#C7C0AE" };
+}
+function esc(s) { return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+// Only allow http(s) links to render as clickable — blocks javascript: and other unsafe schemes.
+function safeUrl(url) {
+  if (!url) return "";
+  try {
+    const u = new URL(url);
+    return (u.protocol === "http:" || u.protocol === "https:") ? url : "";
+  } catch (e) { return ""; }
+}
+
+// ---------------------------------------------------------------------
+// App state + Firebase wiring
+// ---------------------------------------------------------------------
+const state = {
+  screen: CONFIG_READY ? "loading" : "setup",
+  authUser: null,
+  profile: null,       // { name, role, classId }
+  classes: [],          // [{id,label}]
+  assignments: [],       // [{id,...}]
+  loginMode: "login",
+  loginRole: "teacher",
+  draft: { name: "", email: "", password: "", classId: "", adminCode: "" },
+  error: "",
+  formError: "",
+  saving: false,
+  shareMsg: "",
+};
+
+let auth, db, unsubClasses, unsubAssignments;
+
+if (CONFIG_READY) {
+  firebase.initializeApp(firebaseConfig);
+  auth = firebase.auth();
+  db = firebase.firestore();
+
+  auth.onAuthStateChanged(async (user) => {
+    state.authUser = user;
+    if (!user) {
+      teardownListeners();
+      state.profile = null;
+      state.screen = "login";
+      state.saving = false;
+      render();
+      return;
+    }
+    if (user.isAnonymous) {
+      // Anonymous session: attach listeners right away so the class list is
+      // readable for the login-screen dropdown, even before a class is chosen.
+      attachListeners();
+      state.screen = (state.profile && state.profile.role === "family") ? "app" : "login";
+      state.saving = false;
+      render();
+      return;
+    }
+    try {
+      const snap = await db.collection("users").doc(user.uid).get();
+      if (!snap.exists) {
+        // profile wasn't written yet (rare race) — sign out to avoid a broken state
+        await auth.signOut();
+        return;
+      }
+      state.profile = snap.data();
+      attachListeners();
+      state.screen = "app";
+    } catch (e) {
+      state.error = "تعذر تحميل بيانات الحساب.";
+      state.screen = "login";
+      state.saving = false;
+    }
+    render();
+  });
+}
+
+function attachListeners() {
+  teardownListeners();
+  unsubClasses = db.collection("classes").orderBy("label").onSnapshot(
+    (qs) => { state.classes = qs.docs.map((d) => ({ id: d.id, ...d.data() })); render(); },
+    () => { state.error = "تعذر تحميل قائمة الصفوف — تحققي من قواعد الأمان في Firestore."; render(); }
+  );
+  unsubAssignments = db.collection("assignments").orderBy("dueDate").onSnapshot(
+    (qs) => { state.assignments = qs.docs.map((d) => ({ id: d.id, ...d.data() })); render(); },
+    () => { state.error = "تعذر تحميل التكليفات — تحققي من قواعد الأمان في Firestore."; render(); }
+  );
+}
+function teardownListeners() {
+  if (unsubClasses) unsubClasses();
+  if (unsubAssignments) unsubAssignments();
+}
+
+async function seedDefaultClassesIfEmpty() {
+  const snap = await db.collection("classes").limit(1).get();
+  if (snap.empty) {
+    const batch = db.batch();
+    DEFAULT_CLASSES.forEach((label) => batch.set(db.collection("classes").doc(), { label }));
+    await batch.commit();
+  }
+}
+
+const AUTH_ERR = {
+  "auth/email-already-in-use": "هذا البريد مسجّل مسبقاً — جرّبي تسجيل الدخول.",
+  "auth/invalid-email": "صيغة البريد الإلكتروني غير صحيحة.",
+  "auth/weak-password": "كلمة المرور قصيرة جداً (٦ أحرف على الأقل).",
+  "auth/wrong-password": "كلمة المرور غير صحيحة.",
+  "auth/user-not-found": "لا يوجد حساب بهذا البريد.",
+  "auth/invalid-credential": "البريد أو كلمة المرور غير صحيحة.",
+  "auth/too-many-requests": "محاولات كثيرة، حاولي بعد قليل.",
+  "auth/network-request-failed": "تعذر الاتصال بالخادم — افتحي الملف في Safari (وليس داخل معاينة المحادثة) وتأكدي من اتصال الإنترنت.",
+  "auth/unauthorized-domain": "هذا الرابط غير مصرّح له بالدخول — أضيفي النطاق في Firebase Console من Authentication > Settings > Authorized domains.",
+};
+
+const app = {
+  async register(form) {
+    state.formError = "";
+    const { email, password, name, role, adminCode } = form;
+    if (!email || !password || !name) { state.formError = "الرجاء تعبئة كل الحقول."; render(); return; }
+    if (role === "admin" && adminCode !== ADMIN_SIGNUP_CODE) {
+      state.formError = "رمز تفعيل حساب الإدارة غير صحيح."; render(); return;
+    }
+    state.saving = true; render();
+    try {
+      const cred = await auth.createUserWithEmailAndPassword(email, password);
+      await db.collection("users").doc(cred.user.uid).set({ name, role });
+      if (role === "admin") await seedDefaultClassesIfEmpty();
+      state.draft = { name: "", email: "", password: "", classId: "", adminCode: "" };
+      // onAuthStateChanged picks up the rest
+    } catch (e) {
+      state.formError = (AUTH_ERR[e.code] || "تعذر إنشاء الحساب.") + (e.code ? ` (${e.code})` : "");
+      state.saving = false; render();
+    }
+  },
+  async login(form) {
+    state.formError = "";
+    const { email, password } = form;
+    if (!email || !password) { state.formError = "الرجاء تعبئة البريد وكلمة المرور."; render(); return; }
+    state.saving = true; render();
+    try {
+      await auth.signInWithEmailAndPassword(email, password);
+    } catch (e) {
+      state.formError = (AUTH_ERR[e.code] || "تعذر تسجيل الدخول.") + (e.code ? ` (${e.code})` : "");
+      state.saving = false; render();
+    }
+  },
+  // Family browsing needs no account — sign in anonymously (satisfies Firestore's
+  // "request.auth != null" read rule) and keep the chosen class only in memory.
+  async browseFamily(classId) {
+    state.formError = "";
+    if (!classId) { state.formError = "الرجاء اختيار الصف."; render(); return; }
+    state.profile = { role: "family", name: "طالبة / ولي أمر", classId };
+    state.saving = true; render();
+    try {
+      if (auth.currentUser) {
+        attachListeners();
+        state.screen = "app";
+        state.saving = false;
+        render();
+      } else {
+        await auth.signInAnonymously();
+      }
+    } catch (e) {
+      state.profile = null;
+      const hint = e.code === "auth/admin-restricted-operation"
+        ? " (فعّلي Anonymous من Firebase Console > Authentication > Sign-in method)"
+        : "";
+      state.formError = (AUTH_ERR[e.code] || "تعذر تحميل التكليفات.") + hint + (e.code ? ` (${e.code})` : "");
+      state.saving = false; render();
+    }
+  },
+  logout() { auth.signOut(); },
+  setLoginMode(m) { state.loginMode = m; state.formError = ""; render(); },
+  setLoginRole(r) {
+    state.loginRole = r; state.formError = ""; render();
+    // Pre-authenticate anonymously as soon as the family tab is opened, so the
+    // class dropdown has data to show before the person picks anything.
+    if (r === "family" && auth && !auth.currentUser) {
+      auth.signInAnonymously().catch(() => {});
+    }
+  },
+
+  flashShareMsg(msg) {
+    state.shareMsg = msg;
+    render();
+    setTimeout(() => { state.shareMsg = ""; render(); }, 2500);
+  },
+  async shareWeekSummary() {
+    app.flashShareMsg("جارٍ تجهيز ملف PDF…");
+    try {
+      const className = (state.classes.find((c) => c.id === state.profile.classId) || {}).label || "الصف";
+      const fileName = `تكليفات-${className}.pdf`.replace(/\s+/g, "-");
+      const el = document.createElement("div");
+      el.style.position = "fixed";
+      el.style.top = "-10000px";
+      el.style.right = "-10000px";
+      el.innerHTML = buildFamilySummaryReportHTML();
+      document.body.appendChild(el);
+      if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch (e) {} }
+
+      const worker = html2pdf().set({
+        margin: 0,
+        filename: fileName,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: "pt", format: "a4", orientation: "portrait" },
+      }).from(el);
+      const blob = await worker.output("blob");
+      document.body.removeChild(el);
+
+      const file = new File([blob], fileName, { type: "application/pdf" });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ files: [file], title: fileName });
+        state.shareMsg = ""; render();
+      } else {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url; a.download = fileName;
+        document.body.appendChild(a); a.click(); a.remove();
+        URL.revokeObjectURL(url);
+        app.flashShareMsg("تم تحميل ملف PDF ✓");
+      }
+    } catch (e) {
+      app.flashShareMsg("تعذر إنشاء ملف PDF.");
+    }
+  },
+  async copyWeekSummary() {
+    const text = buildFamilySummaryText();
+    try {
+      await navigator.clipboard.writeText(text);
+      app.flashShareMsg("تم نسخ الملخص ✓");
+    } catch (e) {
+      app.flashShareMsg("تعذر النسخ — انسخيه يدوياً من زر المشاركة.");
+    }
+  },
+  async downloadComplianceReport(fromStr, toStr) {
+    state.saving = true; render();
+    try {
+      const fileName = `تقرير-الالتزام-${fromStr}-إلى-${toStr}.pdf`;
+      const el = document.createElement("div");
+      el.style.position = "fixed"; el.style.top = "-10000px"; el.style.right = "-10000px";
+      el.innerHTML = buildComplianceReportHTML(fromStr, toStr);
+      document.body.appendChild(el);
+      if (document.fonts && document.fonts.ready) { try { await document.fonts.ready; } catch (e) {} }
+
+      const worker = html2pdf().set({
+        margin: 0,
+        filename: fileName,
+        image: { type: "jpeg", quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: "pt", format: "a4", orientation: "portrait" },
+      }).from(el);
+      const blob = await worker.output("blob");
+      document.body.removeChild(el);
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = fileName;
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+      app.flashShareMsg("تم تحميل التقرير ✓");
+    } catch (e) {
+      app.flashShareMsg("تعذر إنشاء التقرير.");
+    }
+    state.saving = false; render();
+  },
+
+
+  async addAssignment(a) {
+    state.saving = true; render();
+    try {
+      const { classIds, ...base } = a;
+      await Promise.all(classIds.map((classId) =>
+        db.collection("assignments").add({
+          ...base, classId, teacherUid: state.authUser.uid, teacherName: state.profile.name,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        })
+      ));
+    } catch (e) { state.error = "تعذر حفظ التكليف."; }
+    state.saving = false; render();
+  },
+  async removeAssignment(id) {
+    try { await db.collection("assignments").doc(id).delete(); }
+    catch (e) { state.error = "تعذر حذف التكليف."; render(); }
+  },
+  async addClass(label) {
+    if (!label.trim()) return;
+    try { await db.collection("classes").add({ label: label.trim() }); }
+    catch (e) { state.error = "تعذر إضافة الصف."; render(); }
+  },
+  async removeClass(id) {
+    try { await db.collection("classes").doc(id).delete(); }
+    catch (e) { state.error = "تعذر حذف الصف."; render(); }
+  },
+};
+
+// ---------------------------------------------------------------------
+// Rendering (template-string based, event delegation via onclick handlers)
+// ---------------------------------------------------------------------
+const root = document.getElementById("root");
+function render() {
+  if (state.screen === "setup") { root.innerHTML = renderSetup(); return; }
+  if (state.screen === "loading") { root.innerHTML = renderLoading(); return; }
+  if (state.screen === "login") { root.innerHTML = renderLogin(); bindLoginEvents(); return; }
+  root.innerHTML = renderApp();
+  bindAppEvents();
+}
+
+function renderSetup() {
+  return `<div class="center-screen"><div class="login-card" style="max-width:520px">
+    <div class="eyebrow">حين يتوازن الجهد، يتّسع للتعلّم</div>
+    <h1 class="title">إعداد الاتصال بـ Firebase</h1>
+    <div class="setup-banner" style="margin-top:16px">
+      لم يتم ضبط <code>firebaseConfig</code> بعد في أعلى ملف الكود.<br/>
+      افتحي ملف <code>school-planner-firebase.html</code>، وابحثي عن السطر
+      <code>const firebaseConfig = {...}</code> في بداية الكود، واستبدلي القيم
+      بمعلومات مشروعك من Firebase Console، ثم احفظي الملف وأعيدي فتحه.
+    </div>
+  </div></div>`;
+}
+function renderLoading() {
+  return `<div class="center-screen"><span class="spin display" style="font-size:24px;color:var(--teal)">⏳</span></div>`;
+}
+
+function renderLogin() {
+  const roles = [["teacher", "معلّمة"], ["family", "طالبة / ولي أمر"], ["admin", "الإدارة"]];
+  const classOptions = state.classes.length
+    ? state.classes.map((c) => `<option value="${c.id}">${esc(c.label)}</option>`).join("")
+    : `<option value="">لا توجد صفوف بعد — يلزم حساب إدارة أولاً</option>`;
+
+  const roleTabs = `<div class="role-switch" style="margin:18px 0">
+      ${roles.map(([k, l]) => `<button class="role-pill ${state.loginRole === k ? "active" : ""}" onclick="app.setLoginRole('${k}')">${l}</button>`).join("")}
+    </div>`;
+
+  // Family: no account needed — just pick a class and browse.
+  if (state.loginRole === "family") {
+    return `<div class="login-wrap"><div class="login-card">
+      <h1 class="title">توازن</h1>
+      <div class="eyebrow">حين يتوازن الجهد، يتّسع للتعلّم</div>
+      ${roleTabs}
+      <form id="familyBrowseForm" style="margin-top:16px">
+        <label class="field">اختيار الصف لعرض تكليفاته
+          <select name="classId">${classOptions}</select>
+        </label>
+        ${state.formError ? `<p style="color:#DC2626;font-size:13px;margin:0 0 10px">${esc(state.formError)}</p>` : ""}
+        <button type="submit" class="btn-primary" ${state.saving ? "disabled" : ""}>عرض التكليفات</button>
+      </form>
+      <p class="muted" style="margin-top:14px;font-size:12px">لا حاجة لحساب — يكفي اختيار الصف لعرض التكليفات.</p>
+    </div></div>`;
+  }
+
+  return `<div class="login-wrap"><div class="login-card">
+    <h1 class="title">توازن</h1>
+    <div class="eyebrow">حين يتوازن الجهد، يتّسع للتعلّم</div>
+    ${roleTabs}
+
+    <div class="mode-switch">
+      <button class="mode-tab ${state.loginMode === "login" ? "active" : ""}" onclick="app.setLoginMode('login')">تسجيل الدخول</button>
+      <button class="mode-tab ${state.loginMode === "register" ? "active" : ""}" onclick="app.setLoginMode('register')">حساب جديد</button>
+    </div>
+
+    <form id="authForm" style="margin-top:16px">
+      ${state.loginMode === "register" ? `
+      <label class="field">الاسم الظاهر
+        <input name="name" value="${esc(state.draft.name)}" placeholder="مثال: أ. نهى المطيري" />
+      </label>` : ""}
+      <label class="field">البريد الإلكتروني
+        <input name="email" type="email" value="${esc(state.draft.email)}" placeholder="name@example.com" />
+      </label>
+      <label class="field">كلمة المرور
+        <input name="password" type="password" value="${esc(state.draft.password)}" />
+      </label>
+      ${state.loginMode === "register" && state.loginRole === "admin" ? `
+      <label class="field">رمز تفعيل حساب الإدارة
+        <input name="adminCode" type="password" value="${esc(state.draft.adminCode)}" placeholder="من مسؤول النظام" />
+      </label>` : ""}
+      ${state.formError ? `<p style="color:#DC2626;font-size:13px;margin:0 0 10px">${esc(state.formError)}</p>` : ""}
+      <button type="submit" class="btn-primary" ${state.saving ? "disabled" : ""}>
+        ${state.loginMode === "login" ? "دخول" : "إنشاء الحساب"}
+      </button>
+    </form>
+    <p class="muted" style="margin-top:14px;font-size:12px">
+      نظام إلكتروني لتنظيم ومتابعة التكليفات الدراسية.
+    </p>
+  </div></div>`;
+}
+
+function bindLoginEvents() {
+  const familyForm = document.getElementById("familyBrowseForm");
+  if (familyForm) {
+    familyForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const fd = new FormData(familyForm);
+      app.browseFamily(fd.get("classId") || "");
+    });
+    return;
+  }
+  const form = document.getElementById("authForm");
+  if (!form) return;
+  form.addEventListener("input", (e) => {
+    const { name, value } = e.target;
+    if (name && name in state.draft) state.draft[name] = value;
+  });
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const fd = new FormData(form);
+    const payload = {
+      email: (fd.get("email") || "").trim(),
+      password: fd.get("password") || "",
+      name: (fd.get("name") || "").trim(),
+      role: state.loginRole,
+      classId: fd.get("classId") || "",
+      adminCode: fd.get("adminCode") || "",
+    };
+    if (state.loginMode === "login") app.login(payload);
+    else app.register(payload);
+  });
+}
+
+function renderApp() {
+  const roleLabel = ROLE_LABEL[state.profile.role];
+  const isFamily = state.profile.role === "family";
+  return `
+    <header class="top">
+      <div><h1 class="title">توازن</h1><div class="school-name">${SCHOOL_NAME}</div></div>
+      <div class="userbox">
+        <div class="userinfo"><span class="username">${esc(state.profile.name)}</span><span class="userrole">${roleLabel}</span></div>
+        <button class="btn-ghost" onclick="app.logout()">${isFamily ? "تغيير الصف" : "تسجيل الخروج"}</button>
+      </div>
+    </header>
+    <div class="body-row">
+    <div class="spine">
+      <span>المعلمات</span><span>الطالبات وأولياء الأمور</span><span>الإدارة</span>
+    </div>
+    <div class="main">
+      ${state.error ? `<div class="error-banner">${esc(state.error)}</div>` : ""}
+      <div id="viewRoot">${renderRoleView()}</div>
+    </div>
+    </div>
+  `;
+}
+
+function renderRoleView() {
+  if (state.profile.role === "teacher") return renderTeacher();
+  if (state.profile.role === "family") return renderFamily();
+  return renderAdmin();
+}
+
+// Finds the Sun–Thu school week containing a given date, and per-day totals.
+function weekDatesFor(dateStr) {
+  const base = dateStr ? new Date(dateStr + "T00:00:00") : new Date();
+  const start = startOfWeek(base);
+  return WEEKDAYS.map((_, i) => addDays(start, i));
+}
+function dayLoad(classId, dateStr) {
+  const items = state.assignments.filter((a) => a.classId === classId && a.dueDate === dateStr);
+  const minutes = items.reduce((s, a) => s + Number(a.estMinutes || 0), 0);
+  const heavyCount = items.filter((a) => typeWeight(a.type) >= 3).length;
+  return { minutes, heavyCount };
+}
+// Live warning shown in the teacher's assignment form: if the chosen day would
+// become "heavy" for that class, suggest the lightest alternative day this week.
+// Per-class warning (used internally); returns "" if that class/day isn't heavy.
+function computeLoadWarningHTML(classId, dueDate, type, estMinutes) {
+  if (!classId || !dueDate) return "";
+  const addMinutes = Number(estMinutes || 0);
+  const addHeavy = typeWeight(type) >= 3 ? 1 : 0;
+  const current = dayLoad(classId, dueDate);
+  const projected = { minutes: current.minutes + addMinutes, heavyCount: current.heavyCount + addHeavy };
+  const level = loadLevel(projected.minutes, projected.heavyCount);
+  if (level.label !== "مرتفع") return "";
+
+  let best = null;
+  for (const d of weekDatesFor(dueDate)) {
+    const key = fmtDate(d);
+    if (key === dueDate) continue;
+    const existing = dayLoad(classId, key);
+    const proj = { minutes: existing.minutes + addMinutes, heavyCount: existing.heavyCount + addHeavy };
+    const lvl = loadLevel(proj.minutes, proj.heavyCount);
+    if (lvl.label !== "مرتفع" && (!best || proj.minutes < best.minutes)) {
+      best = { day: WEEKDAYS[d.getDay()], minutes: proj.minutes };
+    }
+  }
+  const className = (state.classes.find((c) => c.id === classId) || {}).label || "";
+  const suggestion = best
+    ? `جربي يوم <strong>${best.day}</strong> بدلاً منه — العبء المتوقع فيه أخف.`
+    : `كل أيام هذا الأسبوع مزدحمة لهذا الصف — يُفضّل التنسيق مع باقي المعلمات.`;
+
+  return `<div style="margin:0 0 10px;padding:12px 14px;border-radius:10px;background:#FEF2F2;border:1px solid #FCA5A5;color:#991B1B;font-size:13px;line-height:1.8">
+    ⚠️ <strong>${esc(className)}</strong>: هذا اليوم مزدحم (${projected.minutes} دقيقة${projected.heavyCount ? `، ${projected.heavyCount} اختبار/مشروع` : ""}). ${suggestion}
+  </div>`;
+}
+// Combines the per-class warning across every class the teacher has selected.
+function computeLoadWarningHTMLMulti(classIds, dueDate, type, estMinutes) {
+  return classIds.map((id) => computeLoadWarningHTML(id, dueDate, type, estMinutes)).join("");
+}
+
+function renderTeacher() {
+  const mine = state.assignments.filter((a) => a.teacherUid === state.authUser.uid);
+  const subjOpts = SUBJECTS.map((s) => `<option value="${esc(s)}">${esc(s)}</option>`).join("");
+  return `
+  <div class="grid2">
+    <form id="assignForm" class="card">
+      <h2 class="card-title">إضافة تكليف جديد</h2>
+      <label class="field">الصف (يمكن اختيار أكثر من صف لنفس التكليف)
+        <div class="type-row" id="classRow" data-value="[]" style="flex-wrap:wrap">
+          ${state.classes.map((c) => `<button type="button" class="type-pill" data-class="${c.id}">${esc(c.label)}</button>`).join("")}
+        </div>
+      </label>
+      <label class="field">المادة<select name="subject">${subjOpts}</select></label>
+      <label class="field">نوع التكليف
+        <div class="type-row" id="typeRow" data-value="homework">
+          ${TYPES.map((t) => `<button type="button" class="type-pill ${t.key === "homework" ? "active" : ""}" data-type="${t.key}">${t.label}</button>`).join("")}
+        </div>
+      </label>
+      <label class="field">عنوان التكليف<input name="title" placeholder="مثال: أوراق عمل الوحدة الثالثة" /></label>
+      <div class="row2">
+        <label class="field">تاريخ التسليم<input name="dueDate" type="date" /></label>
+        <label class="field">الوقت المتوقع (دقيقة)<input name="estMinutes" type="number" min="5" max="240" step="5" value="20" /></label>
+      </div>
+      <label class="field">رابط مرفق (اختياري) — ورقة عمل، درايف، فيديو شرح
+        <input name="link" type="url" placeholder="https://..." />
+      </label>
+      <div id="loadWarning"></div>
+      <button type="submit" class="btn-primary" ${state.saving ? "disabled" : ""}>+ نشر التكليف</button>
+    </form>
+    <div class="card">
+      <h2 class="card-title">تكليفاتك</h2>
+      ${mine.length === 0 ? `<p class="muted">لا توجد تكليفات بعد.</p>` : `<ul class="list">
+        ${mine.slice(0, 12).map((a) => `
+          <li class="list-item">
+            <div><div class="list-item-title">${typeLabel(a.type)} · ${esc(a.title)}</div>
+            <div class="list-item-meta">${esc((state.classes.find((c) => c.id === a.classId) || {}).label || "")} · ${esc(a.subject)} · ${esc(a.dueDate)} · ${esc(a.estMinutes)} د${safeUrl(a.link) ? ` · <a href="${esc(safeUrl(a.link))}" target="_blank" rel="noopener">📎 الرابط</a>` : ""}</div></div>
+            <button class="icon-btn" onclick="app.removeAssignment('${a.id}')">✕</button>
+          </li>`).join("")}
+      </ul>`}
+    </div>
+  </div>`;
+}
+
+// Builds a plain-text weekly digest a parent can share themselves (WhatsApp, SMS, etc.)
+function buildFamilySummaryText() {
+  const classId = state.profile.classId;
+  const className = (state.classes.find((c) => c.id === classId) || {}).label || "";
+  const weekDates = weekDatesFor(fmtDate(new Date()));
+  const mine = state.assignments.filter((a) => a.classId === classId);
+  const lines = [`📋 ملخص تكليفات ${className} — ${SCHOOL_NAME}`, `عبر تطبيق توازن`, ""];
+  let total = 0;
+  weekDates.forEach((d) => {
+    const key = fmtDate(d);
+    const items = mine.filter((a) => a.dueDate === key);
+    if (items.length === 0) return;
+    lines.push(`• ${WEEKDAYS[d.getDay()]} (${fmtLabel(d)}):`);
+    items.forEach((a) => {
+      lines.push(`   - ${typeLabel(a.type)}: ${a.subject} — ${a.title} (${a.estMinutes} د)${a.link ? ` — ${a.link}` : ""}`);
+      total++;
+    });
+  });
+  if (total === 0) lines.push("لا توجد تكليفات مسجّلة هذا الأسبوع.");
+  return lines.join("\n");
+}
+
+// Builds a styled, printable HTML report used to generate the shareable PDF.
+function buildFamilySummaryReportHTML() {
+  const classId = state.profile.classId;
+  const className = (state.classes.find((c) => c.id === classId) || {}).label || "";
+  const weekDates = weekDatesFor(fmtDate(new Date()));
+  const mine = state.assignments.filter((a) => a.classId === classId);
+  const today = new Date().toLocaleDateString("ar-SA", { day: "numeric", month: "long", year: "numeric" });
+
+  const days = weekDates.map((d) => {
+    const key = fmtDate(d);
+    const items = mine.filter((a) => a.dueDate === key);
+    const rows = items.length
+      ? items.map((a) => `
+        <div style="display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #F0EBE0">
+          <div>
+            <div style="font-weight:700;font-size:13px">${esc(typeLabel(a.type))} · ${esc(a.title)}</div>
+            <div style="font-size:11.5px;color:#5B6478;margin-top:2px">${esc(a.subject)} · ${esc(a.teacherName)}</div>
+          </div>
+          <div style="font-size:12px;color:#0F766E;white-space:nowrap">${esc(a.estMinutes)} د</div>
+        </div>`).join("")
+      : `<div style="font-size:12.5px;color:#9AA3AF;padding:6px 0">لا يوجد تكليفات</div>`;
+    return `
+      <div style="margin-bottom:14px">
+        <div style="font-family:'Cairo',sans-serif;font-weight:700;font-size:14px;color:#1F2A44;background:#F3FAF9;padding:6px 12px;border-radius:6px">
+          ${WEEKDAYS[d.getDay()]} — ${fmtLabel(d)}
+        </div>
+        <div style="padding:2px 12px">${rows}</div>
+      </div>`;
+  }).join("");
+
+  return `
+  <div style="width:680px;padding:36px;background:#fff;font-family:'Tajawal',sans-serif;color:#1F2A44;direction:rtl">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #0F766E;padding-bottom:14px;margin-bottom:20px">
+      <div>
+        <div style="font-family:'Cairo',sans-serif;font-weight:800;font-size:24px;color:#0F766E">توازن</div>
+        <div style="font-size:11.5px;color:#5B6478;margin-top:2px">${esc(SCHOOL_NAME)}</div>
+      </div>
+      <div style="text-align:left;font-size:11.5px;color:#5B6478">${today}</div>
+    </div>
+    <div style="font-family:'Cairo',sans-serif;font-weight:700;font-size:17px;margin-bottom:2px">ملخص تكليفات ${esc(className)}</div>
+    <div style="font-size:12px;color:#5B6478;margin-bottom:18px">الأسبوع الدراسي الحالي</div>
+    ${days}
+  </div>`;
+}
+
+// ---- Admin compliance report ----
+function schoolDaysInRange(fromStr, toStr) {
+  const start = new Date(fromStr + "T00:00:00");
+  const end = new Date(toStr + "T00:00:00");
+  const days = [];
+  for (let d = new Date(start); d <= end; d = addDays(d, 1)) {
+    if (d.getDay() <= 4) days.push(new Date(d)); // Sun(0)–Thu(4) are school days
+  }
+  return days;
+}
+function computeComplianceReport(fromStr, toStr) {
+  const days = schoolDaysInRange(fromStr, toStr);
+  const perClass = state.classes.map((c) => {
+    let light = 0, medium = 0, heavy = 0, totalMinutes = 0, totalAssign = 0;
+    const typeCounts = { homework: 0, quiz: 0, project: 0 };
+    days.forEach((d) => {
+      const key = fmtDate(d);
+      const items = state.assignments.filter((a) => a.classId === c.id && a.dueDate === key);
+      const minutes = items.reduce((s, a) => s + Number(a.estMinutes || 0), 0);
+      const heavyCount = items.filter((a) => typeWeight(a.type) >= 3).length;
+      const lvl = loadLevel(minutes, heavyCount).label;
+      if (lvl === "مرتفع") heavy++; else if (lvl === "متوسط") medium++; else if (lvl === "خفيف") light++;
+      totalMinutes += minutes;
+      totalAssign += items.length;
+      items.forEach((a) => { if (typeCounts[a.type] !== undefined) typeCounts[a.type]++; });
+    });
+    const schoolDaysCount = days.length;
+    const compliance = schoolDaysCount ? Math.round(((schoolDaysCount - heavy) / schoolDaysCount) * 100) : 100;
+    return { ...c, light, medium, heavy, totalMinutes, totalAssign, typeCounts, compliance, schoolDaysCount };
+  });
+  const overallCompliance = perClass.length
+    ? Math.round(perClass.reduce((s, c) => s + c.compliance, 0) / perClass.length)
+    : 100;
+  return { perClass, overallCompliance, days };
+}
+// Teacher usage is derived from the assignments themselves (createdAt + teacherName),
+// since Firestore rules intentionally keep the users collection private per-account.
+function computeTeacherUsage(fromStr, toStr) {
+  const start = new Date(fromStr + "T00:00:00");
+  const end = new Date(toStr + "T23:59:59");
+  const byTeacher = {};
+  state.assignments.forEach((a) => {
+    const created = a.createdAt && a.createdAt.toDate ? a.createdAt.toDate() : null;
+    if (!created || created < start || created > end) return;
+    const key = a.teacherUid || a.teacherName || "غير معروف";
+    if (!byTeacher[key]) byTeacher[key] = { name: a.teacherName || "غير معروف", count: 0 };
+    byTeacher[key].count++;
+  });
+  return Object.values(byTeacher).sort((a, b) => b.count - a.count);
+}
+function buildComplianceReportHTML(fromStr, toStr) {
+  const { perClass, overallCompliance } = computeComplianceReport(fromStr, toStr);
+  const teachers = computeTeacherUsage(fromStr, toStr);
+  const sorted = [...perClass].sort((a, b) => a.compliance - b.compliance);
+  const fmtAr = (s) => new Date(s + "T00:00:00").toLocaleDateString("ar-SA", { day: "numeric", month: "long", year: "numeric" });
+  const today = new Date().toLocaleDateString("ar-SA", { day: "numeric", month: "long", year: "numeric" });
+
+  const rows = sorted.map((c) => {
+    const barColor = c.compliance >= 85 ? "#0F766E" : c.compliance >= 60 ? "#C89B3C" : "#DC2626";
+    return `
+    <div style="margin-bottom:14px">
+      <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px">
+        <span style="font-weight:700">${esc(c.label)}</span>
+        <span style="color:${barColor};font-weight:700">${c.compliance}%</span>
+      </div>
+      <div style="background:#F0EBE0;border-radius:6px;height:8px;overflow:hidden">
+        <div style="width:${c.compliance}%;height:100%;background:${barColor}"></div>
+      </div>
+      <div style="font-size:11px;color:#5B6478;margin-top:4px">
+        ${c.heavy} يوم مرتفع · ${c.medium} متوسط · ${c.light} خفيف من أصل ${c.schoolDaysCount} يوم دراسي —
+        ${c.totalAssign} تكليف (${c.typeCounts.quiz} اختبار، ${c.typeCounts.project} مشروع، ${c.typeCounts.homework} واجب)
+      </div>
+    </div>`;
+  }).join("");
+
+  return `
+  <div style="width:680px;padding:36px;background:#fff;font-family:'Tajawal',sans-serif;color:#1F2A44;direction:rtl">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;border-bottom:2px solid #0F766E;padding-bottom:14px;margin-bottom:20px">
+      <div>
+        <div style="font-family:'Cairo',sans-serif;font-weight:800;font-size:24px;color:#0F766E">توازن</div>
+        <div style="font-size:11.5px;color:#5B6478;margin-top:2px">${esc(SCHOOL_NAME)}</div>
+      </div>
+      <div style="text-align:left;font-size:11.5px;color:#5B6478">تاريخ الإصدار: ${today}</div>
+    </div>
+    <div style="font-family:'Cairo',sans-serif;font-weight:700;font-size:17px;margin-bottom:2px">تقرير الالتزام بتوزيع العبء الدراسي</div>
+    <div style="font-size:12px;color:#5B6478;margin-bottom:18px">من ${fmtAr(fromStr)} إلى ${fmtAr(toStr)}</div>
+
+    <div style="background:#F3FAF9;border-radius:10px;padding:16px 18px;margin-bottom:22px;display:flex;justify-content:space-between;align-items:center;gap:16px">
+      <div>
+        <div style="font-size:12.5px;color:#5B6478">نسبة الالتزام العامة بالمدرسة</div>
+        <div style="font-family:'Cairo',sans-serif;font-weight:800;font-size:28px;color:#0F766E">${overallCompliance}%</div>
+      </div>
+      <div style="font-size:11px;color:#5B6478;max-width:260px;text-align:left">
+        نسبة الأيام الدراسية التي لم يُسجَّل فيها ازدحام (اختباران فأكثر أو تجاوز الحد الأقصى للوقت) عبر كل الصفوف خلال الفترة.
+      </div>
+    </div>
+
+    <div style="font-family:'Cairo',sans-serif;font-weight:700;font-size:14px;margin-bottom:10px">الالتزام حسب الصف (من الأقل التزاماً)</div>
+    ${rows || `<p style="font-size:13px;color:#9AA3AF">لا توجد صفوف مسجّلة.</p>`}
+
+    <div style="font-family:'Cairo',sans-serif;font-weight:700;font-size:14px;margin:26px 0 10px;padding-top:16px;border-top:1px solid #F0EBE0">
+      استخدام المعلمات خلال الفترة
+    </div>
+    <div style="font-size:12.5px;color:#5B6478;margin-bottom:10px">
+      ${teachers.length} معلّمة${teachers.length === 1 ? "" : "ات"} استخدمن النظام وأضفن تكليفات خلال هذه الفترة.
+    </div>
+    ${teachers.length ? `<div>
+      ${teachers.map((t) => `
+        <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #F0EBE0;font-size:13px">
+          <span>${esc(t.name)}</span>
+          <span style="color:#0F766E;font-weight:700">${t.count} تكليف</span>
+        </div>`).join("")}
+    </div>` : `<p style="font-size:13px;color:#9AA3AF">لا يوجد نشاط مسجّل لأي معلّمة خلال هذه الفترة.</p>`}
+  </div>`;
+}
+
+function renderFamily() {
+  const classId = state.profile.classId;
+  const className = (state.classes.find((c) => c.id === classId) || {}).label || "—";
+  const weekStart = startOfWeek(new Date());
+  const weekDates = WEEKDAYS.map((_, i) => addDays(weekStart, i));
+  const mine = state.assignments.filter((a) => a.classId === classId).sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+  const weekCount = mine.filter((a) => weekDates.some((d) => fmtDate(d) === a.dueDate)).length;
+  return `
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
+      <div>
+        <span class="muted">الصف المسجّل: </span><span class="list-item-title" style="font-size:15px">${esc(className)}</span>
+        <div class="muted" style="margin-top:4px">${weekCount} تكليف/تكليفات هذا الأسبوع</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn-ghost" onclick="app.shareWeekSummary()">📄 مشاركة PDF</button>
+        <button class="btn-ghost" onclick="app.copyWeekSummary()">نسخ كنص</button>
+      </div>
+    </div>
+    ${state.shareMsg ? `<p class="muted" style="margin:10px 0 0;color:#0F766E">${esc(state.shareMsg)}</p>` : ""}
+  </div>
+  <div style="display:grid;gap:12px;margin-top:16px">
+    ${weekDates.map((d) => {
+      const key = fmtDate(d);
+      const items = mine.filter((a) => a.dueDate === key);
+      return `<div class="card">
+        <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+          <span class="display" style="font-weight:700;font-size:15px">${WEEKDAYS[d.getDay()]}</span>
+          <span class="muted">${fmtLabel(d)}</span>
+        </div>
+        ${items.length === 0 ? `<p class="muted">لا يوجد تكليفات هذا اليوم.</p>` : `<ul class="list">
+          ${items.map((a) => `<li class="list-item"><div>
+            <div class="list-item-title">${typeLabel(a.type)} · ${esc(a.title)}</div>
+            <div class="list-item-meta">${esc(a.subject)} · ${esc(a.teacherName)} · ${esc(a.estMinutes)} د${safeUrl(a.link) ? ` · <a href="${esc(safeUrl(a.link))}" target="_blank" rel="noopener">📎 الرابط</a>` : ""}</div>
+          </div></li>`).join("")}
+        </ul>`}
+      </div>`;
+    }).join("")}
+  </div>`;
+}
+
+function renderAdmin() {
+  const weekStart = startOfWeek(new Date());
+  const weekDates = WEEKDAYS.map((_, i) => addDays(weekStart, i));
+  const loadByClassDay = {};
+  state.classes.forEach((c) => {
+    loadByClassDay[c.id] = weekDates.map((d) => {
+      const key = fmtDate(d);
+      const items = state.assignments.filter((a) => a.classId === c.id && a.dueDate === key);
+      const minutes = items.reduce((s, a) => s + Number(a.estMinutes || 0), 0);
+      const heavyCount = items.filter((a) => typeWeight(a.type) >= 3).length;
+      return { minutes, heavyCount };
+    });
+  });
+  const flagged = state.classes.map((c) => {
+    const vals = loadByClassDay[c.id] || [];
+    const heavyDays = vals.filter((v) => loadLevel(v.minutes, v.heavyCount).label === "مرتفع").length;
+    return { ...c, heavyDays };
+  }).filter((f) => f.heavyDays > 0).sort((a, b) => b.heavyDays - a.heavyDays);
+
+  return `
+  <div class="card">
+    <h2 class="card-title">نبض العبء الأسبوعي لكل صف</h2>
+    <p class="muted">يجمع الوقت المقدّر مع عدد الاختبارات/المشاريع في نفس اليوم — يومان أو أكثر من الاختبارات في نفس اليوم يُصنَّف مرتفعاً تلقائياً.</p>
+    <div style="overflow-x:auto"><table>
+      <thead><tr><th>الصف</th>${weekDates.map((d) => `<th>${WEEKDAYS[d.getDay()]}</th>`).join("")}</tr></thead>
+      <tbody>
+        ${state.classes.map((c) => `<tr>
+          <td style="font-weight:700">${esc(c.label)}</td>
+          ${(loadByClassDay[c.id] || []).map((v) => {
+            const lvl = loadLevel(v.minutes, v.heavyCount);
+            const size = 10 + Math.min(v.minutes, 150) / 6;
+            return `<td><div class="pulse-cell" title="${v.minutes} دقيقة، ${v.heavyCount} اختبار/مشروع — ${lvl.label}">
+              <div class="pulse-dot" style="background:${lvl.color};width:${size}px;height:${size}px"></div>
+              <span class="pulse-val">${v.minutes || "—"}${v.heavyCount > 0 ? ` (${v.heavyCount})` : ""}</span>
+            </div></td>`;
+          }).join("")}
+        </tr>`).join("")}
+      </tbody>
+    </table></div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2 class="card-title">صفوف تحتاج متابعة</h2>
+    ${flagged.length === 0 ? `<p class="muted">لا يوجد ازدحام ملحوظ هذا الأسبوع. ✓</p>` : `<ul class="list">
+      ${flagged.map((f) => `<li class="list-item"><div>
+        <div class="list-item-title">⚠️ ${esc(f.label)}</div>
+        <div class="list-item-meta">${f.heavyDays} يوم/أيام بعبء مرتفع هذا الأسبوع</div>
+      </div></li>`).join("")}
+    </ul>`}
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2 class="card-title">تقرير الالتزام بتوزيع العبء</h2>
+    <p class="muted">تقرير رسمي بصيغة PDF يوضح مدى التزام كل صف بتوازن العبء الدراسي، وعدد المعلمات اللي استخدمن النظام وأسماءهن، خلال أي فترة تحددينها (شهر، فصل دراسي، أو مدى مخصّص).</p>
+    <form id="reportForm">
+      <div class="row2">
+        <label class="field">من تاريخ<input type="date" name="from" value="${fmtDate(new Date(new Date().getFullYear(), new Date().getMonth(), 1))}" /></label>
+        <label class="field">إلى تاريخ<input type="date" name="to" value="${fmtDate(new Date())}" /></label>
+      </div>
+      <button type="submit" class="btn-primary" ${state.saving ? "disabled" : ""}>📄 تحميل تقرير PDF</button>
+    </form>
+    ${state.shareMsg ? `<p class="muted" style="margin-top:10px;color:#0F766E">${esc(state.shareMsg)}</p>` : ""}
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h2 class="card-title">إدارة قائمة الصفوف</h2>
+    <form id="classForm" style="display:flex;gap:8px;margin-bottom:14px">
+      <input name="label" placeholder="مثال: الأول ثانوي / 2" style="flex:1" />
+      <button type="submit" class="btn-primary" style="width:auto;margin-top:0;white-space:nowrap">+ إضافة صف</button>
+    </form>
+    <ul class="list">
+      ${state.classes.map((c) => `<li class="list-item">
+        <span class="list-item-title">${esc(c.label)}</span>
+        <button class="icon-btn" onclick="app.removeClass('${c.id}')">✕</button>
+      </li>`).join("")}
+    </ul>
+  </div>
+  <p class="muted" style="margin-top:12px">إجمالي التكليفات المسجّلة: ${state.assignments.length}</p>
+  `;
+}
+
+function bindAppEvents() {
+  const assignForm = document.getElementById("assignForm");
+  if (assignForm) {
+    const classRow = document.getElementById("classRow");
+    const typeRow = document.getElementById("typeRow");
+    const warningBox = document.getElementById("loadWarning");
+    const getSelectedClasses = () => JSON.parse(classRow.dataset.value || "[]");
+    const refreshWarning = () => {
+      const fd = new FormData(assignForm);
+      warningBox.innerHTML = computeLoadWarningHTMLMulti(
+        getSelectedClasses(), fd.get("dueDate"), typeRow.dataset.value, fd.get("estMinutes")
+      );
+    };
+    classRow.addEventListener("click", (e) => {
+      const btn = e.target.closest(".type-pill");
+      if (!btn) return;
+      const ids = getSelectedClasses();
+      const id = btn.dataset.class;
+      const idx = ids.indexOf(id);
+      if (idx === -1) ids.push(id); else ids.splice(idx, 1);
+      classRow.dataset.value = JSON.stringify(ids);
+      btn.classList.toggle("active", ids.includes(id));
+      refreshWarning();
+    });
+    typeRow.addEventListener("click", (e) => {
+      const btn = e.target.closest(".type-pill");
+      if (!btn) return;
+      typeRow.dataset.value = btn.dataset.type;
+      [...typeRow.children].forEach((b) => b.classList.toggle("active", b === btn));
+      refreshWarning();
+    });
+    assignForm.addEventListener("input", (e) => {
+      if (["dueDate", "estMinutes"].includes(e.target.name)) refreshWarning();
+    });
+    assignForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const fd = new FormData(assignForm);
+      const title = (fd.get("title") || "").trim();
+      const dueDate = fd.get("dueDate");
+      const classIds = getSelectedClasses();
+      if (!title || !dueDate || classIds.length === 0) {
+        if (classIds.length === 0) warningBox.innerHTML = `<p style="color:#DC2626;font-size:13px;margin:0 0 10px">اختاري صفاً واحداً على الأقل.</p>`;
+        return;
+      }
+      app.addAssignment({
+        classIds, subject: fd.get("subject"), type: typeRow.dataset.value,
+        title, dueDate, estMinutes: Number(fd.get("estMinutes") || 0),
+        link: (fd.get("link") || "").trim(),
+      });
+      assignForm.reset();
+      classRow.dataset.value = "[]";
+      [...classRow.children].forEach((b) => b.classList.remove("active"));
+      warningBox.innerHTML = "";
+    });
+  }
+  const classForm = document.getElementById("classForm");
+  if (classForm) {
+    classForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const fd = new FormData(classForm);
+      app.addClass(fd.get("label") || "");
+      classForm.reset();
+    });
+  }
+  const reportForm = document.getElementById("reportForm");
+  if (reportForm) {
+    reportForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const fd = new FormData(reportForm);
+      const from = fd.get("from"), to = fd.get("to");
+      if (!from || !to) return;
+      app.downloadComplianceReport(from, to);
+    });
+  }
+}
+
+// initial paint
+render();
+</script>
+</body>
+</html>
